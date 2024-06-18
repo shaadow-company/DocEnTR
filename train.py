@@ -131,6 +131,8 @@ if __name__ == "__main__":
     valid_dibco = cfg.validation_dataset
     data_path = cfg.data_path
     patch_size = TPS
+    checkpoint = cfg.checkpoint
+    checkpoint_path = cfg.checkpoint_path
     image_size =  (SPLITSIZE,SPLITSIZE)
     vis_results = True
     
@@ -144,6 +146,10 @@ if __name__ == "__main__":
     model = build_model(setting, image_size, patch_size)
     
     model = model.to(device)
+    
+    if checkpoint:
+        model.load_state_dict(checkpoint_path)
+    
     optimizer = optim.AdamW(model.parameters(),lr=1.5e-4, betas=(0.9, 0.95),
                          eps=1e-08, weight_decay=0.05, amsgrad=False)
 
