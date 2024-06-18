@@ -12,6 +12,8 @@ class Configs():
         self.parser.add_argument('--batch_size', type=int, default=8)
         self.parser.add_argument('--epochs', type=int, default=151, help= 'the desired training epochs')
         self.parser.add_argument('--model_weights_path', type=str, help= 'the desired trained model')
+        self.parser.add_argument('--checkpoint_path', type=bool, action='store_true', default=False)
+        self.parser.add_argument('--checkpoint_path', type=str, dedfault='.')
         
     def parse(self):
         return self.parser.parse_args()
