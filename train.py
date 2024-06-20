@@ -134,6 +134,10 @@ if __name__ == "__main__":
     checkpoint_path = cfg.checkpoint_path
     image_size =  (SPLITSIZE,SPLITSIZE)
     vis_results = True
+
+    save_state_dict = cfg.save_state_dict
+    save_torch_script = cfg.save_torch_script
+    save_model_path = cfg.save_model_path
     
     # set experiment name
     experiment = setting +'_'+ str(SPLITSIZE)+'_' + str(TPS)
@@ -181,3 +185,9 @@ if __name__ == "__main__":
         if vis_results:
             visualize(model, str(epoch), validloader, image_size, patch_size)
             valid_model(model, data_path, epoch, experiment, valid_dibco)
+        
+        if save_state_dict and (epoch-1)%5 == 0:
+            torch.save(model.state_dict(), f"{save_model_path}/model_epoch_{epoch}.pth")
+        if save_torch_script and (epoch-1)%5 == 0:
+            model_scripted = torch.jit.script(model) # Export to TorchScript
+            model_scripted.save(f'{save_model_path}/model_scripted_epoch_{epoch}.pt') # Save
