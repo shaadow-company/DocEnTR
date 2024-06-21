@@ -13,6 +13,8 @@ class Configs():
         self.parser.add_argument('--epochs', type=int, default=151, help= 'the desired training epochs')
         self.parser.add_argument('--model_weights_path', type=str, help= 'the desired trained model')
         self.parser.add_argument('--checkpoint_path', type=str, default=None)
-        
+        self.parser.add_argument('--save_state_dict', type=bool, action='store_true', default=False, help="Save the state of the model at the end of every 5 epoch using save_state")
+        self.parser.add_argument('--save_torch_script', type=bool, action='store_true', default=False, help="Save weights in compressed files for prediction every 5 epoch")
+        self.parser.add_argument('--save_model_path', type=str, default='.', help='Path to save model')
     def parse(self):
         return self.parser.parse_args()
