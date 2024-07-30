@@ -173,20 +173,13 @@ if __name__ == "__main__":
     trainloader, validloader, _ = load_data.all_data_loader(batch_size)
     
     # get model
-    if cfg.checkpoint_path == None:
+    if checkpoint_path == None:
         model = build_model(setting, image_size, patch_size)
     else:
-        model = load_model_checkpoint(setting, image_size, patch_size, cfg.checkpoint_path)
+        model = load_model_checkpoint(setting, image_size, patch_size, checkpoint_path)
     
     model = model.to(device)
-    
-    if checkpoint_path != None:
-        try:
-            model.load_state_dict(checkpoint_path)
-        except Exception as e:
-            print(e)
-            print("Error loading the model")
-            raise e
+
             
             
     optimizer = optim.AdamW(model.parameters(),lr=1.5e-4, betas=(0.9, 0.95),
