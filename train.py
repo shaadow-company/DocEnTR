@@ -55,6 +55,36 @@ def build_model(setting, image_size, patch_size):
     )
     return model
 
+def load_model_checkpoint(setting, image_size, patch_size, checkpoint):
+    hyper_params = {"base": [6, 8, 768],
+                    "small": [3, 4, 512],
+                    "large": [12, 16, 1024]} 
+
+    encoder_layers = hyper_params[setting][0]
+    encoder_heads = hyper_params[setting][1]
+    encoder_dim = hyper_params[setting][2]
+
+    # define encoder
+    v = ViT(
+        image_size = image_size,
+        patch_size = patch_size,
+        num_classes = 1000,
+        dim = encoder_dim,
+        depth = encoder_layers,
+        heads = encoder_heads,
+        mlp_dim = 2048
+    )
+
+    # define full model
+    model = BinModel(
+        encoder = v,
+        decoder_dim = encoder_dim,      
+        decoder_depth = encoder_layers,
+        decoder_heads = encoder_heads  
+    )
+    model.load_state_dict(torch.load(checkpoint))
+    return model
+
 def visualize(model, epoch, validloader, image_size, patch_size):
     """
     Visualize the result on the validation set and show the validation loss
@@ -110,6 +140,7 @@ def valid_model(model, data_path, epoch, experiment, valid_dibco):
             os.makedirs('./weights/')
         torch.save(model.state_dict(), './weights/best-model_' +
                  str(TPS)+'_' + valid_dibco + experiment + '.pt')
+        torch.save(model.state_dict(), '/content/drive/MyDrive/models/BINARIZATION_MODEL_DOCENTR/best_model.pt')
         # keep only the best epoch images (for storage constraints)    
         dellist = os.listdir('vis'+experiment)
         dellist.remove('epoch'+str(epoch))
@@ -142,7 +173,10 @@ if __name__ == "__main__":
     trainloader, validloader, _ = load_data.all_data_loader(batch_size)
     
     # get model
-    model = build_model(setting, image_size, patch_size)
+    if cfg.checkpoint_path == None:
+        model = build_model(setting, image_size, patch_size)
+    else:
+        model = load_model_checkpoint(setting, image_size, patch_size, cfg.checkpoint_path)
     
     model = model.to(device)
     
