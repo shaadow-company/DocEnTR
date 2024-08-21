@@ -83,6 +83,7 @@ def load_model_checkpoint(setting, image_size, patch_size, checkpoint):
         decoder_heads = encoder_heads  
     )
     model.load_state_dict(torch.load(checkpoint))
+    valid_model(model,data_path, 0, experiment, valid_dibco)
     return model
 
 def visualize(model, epoch, validloader, image_size, patch_size):
