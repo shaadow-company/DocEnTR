@@ -115,7 +115,8 @@ def count_psnr(epoch, data_path, valid_data='2018',setting='',flipped = False , 
     total_psnr = 0
     qo = 0
     
-    gt_folder = data_path + 'DIBCOSETS/' + valid_data + '/gt_imgs' 
+    gt_folder = data_path + 'DIBCOSETS/' + valid_data + '/gt_imgs'
+    print(f"gt_folder: {gt_folder}")
     gt_imgs = os.listdir(gt_folder)
     flip_status = 'flipped' if flipped else 'normal'
     
@@ -123,6 +124,7 @@ def count_psnr(epoch, data_path, valid_data='2018',setting='',flipped = False , 
         os.makedirs('vis'+setting+'/epoch'+str(epoch)+'/00_reconstr_'+flip_status)
 
     for im in gt_imgs:
+        print(f"Testing img: {im}")
         gt_image = cv2.imread(gt_folder+'/'+im)
         max_p =  np.max(gt_image) # max_p is 1 or 255
         gt_image = gt_image / max_p
